@@ -78,7 +78,7 @@ const generateGalaxy = () => {
         uniforms: {
             // 乘以像素比是为了让不同像素比的用户看到相同的渲染结果，
             // 不能直接用 window.devicePixelRatio 因为限制了像素比最大是2
-            uSize: { value: 2 * renderer.getPixelRatio() }
+            uSize: { value: 30 * renderer.getPixelRatio() }
         },
         vertexShader,
         fragmentShader
