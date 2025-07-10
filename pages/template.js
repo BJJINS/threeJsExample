@@ -1,11 +1,14 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import "./style.css"
+import GUI from "three/examples/jsm/libs/lil-gui.module.min.js";
 /**
  * @type {HTMLCanvasElement}
  */
 const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
+
+export const gui = new GUI();
 
 const size = {
     width: window.innerWidth,
@@ -34,9 +37,13 @@ window.onresize = function () {
     camera.updateProjectionMatrix();
 };
 
-const axes = new THREE.AxesHelper(10);
-scene.add(axes);
+
 
 const orbitControls = new OrbitControls(camera, canvas);
 orbitControls.enableDamping = true;
 
+
+export function render() {
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+}
