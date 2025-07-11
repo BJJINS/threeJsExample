@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import "./style.css";
 import GUI from "three/examples/jsm/libs/lil-gui.module.min.js";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
 /**
  * @type {HTMLCanvasElement}
  */
@@ -34,3 +35,8 @@ window.onresize = function () {
     camera.updateProjectionMatrix();
 };
 
+
+
+export const textureLoader = new THREE.TextureLoader();
+export const gltfLoader = new GLTFLoader();
+export const cubeTextureLoader = new THREE.CubeTextureLoader();
