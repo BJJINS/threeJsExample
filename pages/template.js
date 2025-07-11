@@ -34,7 +34,3 @@ window.onresize = function () {
     camera.updateProjectionMatrix();
 };
 
-export function render() {
-    renderer.render(scene, camera);
-    requestAnimationFrame(render);
-}
