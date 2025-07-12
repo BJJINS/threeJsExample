@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-import { OrbitControls, ThreeMFLoader } from "three/examples/jsm/Addons.js";
-import { camera, renderer, scene, cubeTextureLoader, gltfLoader, canvas, textureLoader } from "../template";
-import vertexShader from "./vertexShader.glsl?raw";
+import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { camera, canvas, cubeTextureLoader, gltfLoader, renderer, scene, textureLoader } from "../template";
 
 renderer.shadowMap.enabled = true;
 
