@@ -18,10 +18,12 @@ export const camera = new THREE.PerspectiveCamera(75, size.width / size.height, 
 
 export const scene = new THREE.Scene();
 
+const pixelRatio = Math.min(window.devicePixelRatio, 2);
 export const renderer = new THREE.WebGLRenderer({
     canvas,
+    antialias: pixelRatio < 2
 });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(pixelRatio);
 renderer.setSize(size.width, size.height);
 
 // 画布跟随窗口变化
