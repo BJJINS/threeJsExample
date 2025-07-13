@@ -1,16 +1,20 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { camera, canvas, renderer, scene, gltfLoader, gui } from "../template";
+import suzannePath from "./static/suzanne.glb?url";
+import vertexShader from "./shaders/vertex.glsl?raw";
+import fragmentShader from "./shaders/fragment.glsl?raw";
+
+
 
 const axes = new THREE.AxesHelper(10);
 scene.add(axes);
 
-camera.position.set(7, 7, 7);
+camera.position.set(0, 0, 10);
 camera.lookAt(0, 0, 0);
 
 
 const controls = new OrbitControls(camera, canvas);
-controls.target.y = 3;
 controls.enableDamping = true;
 
 
@@ -23,7 +27,20 @@ gui.addColor(rendererParameters, 'clearColor')
         renderer.setClearColor(rendererParameters.clearColor);
     });
 
-const material = new THREE.MeshBasicMaterial();
+const material = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite:false,
+    vertexShader,
+    fragmentShader,
+    uniforms: {
+        uTime: new THREE.Uniform(0),
+        uColor: new THREE.Uniform(new THREE.Color("#00eeff"))
+    },
+    side:THREE.DoubleSide,
+    blending: THREE.AdditiveBlending
+});
+
+gui.addColor(material.uniforms.uColor, 'value')
 
 const torusKnot = new THREE.Mesh(
     new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32),
@@ -42,7 +59,7 @@ scene.add(sphere);
 
 let suzanne = null;
 gltfLoader.load(
-    import.meta.resolve("./static/suzanne.glb"),
+    suzannePath,
     (gltf) => {
         suzanne = gltf.scene;
         suzanne.traverse((child) => {
@@ -53,8 +70,22 @@ gltfLoader.load(
     }
 );
 
-
+const clock = new THREE.Clock();
 function render() {
+    const elapsedTime = clock.getElapsedTime();
+    material.uniforms.uTime.value = elapsedTime;
+
+    // Rotate objects
+    // if (suzanne) {
+    //     suzanne.rotation.x = - elapsedTime * 0.1;
+    //     suzanne.rotation.y = elapsedTime * 0.2;
+    // }
+
+    // sphere.rotation.x = - elapsedTime * 0.1;
+    // sphere.rotation.y = elapsedTime * 0.2;
+
+    // torusKnot.rotation.x = - elapsedTime * 0.1;
+    // torusKnot.rotation.y = elapsedTime * 0.2;
     controls.update();
     renderer.render(scene, camera);
     requestAnimationFrame(render);
