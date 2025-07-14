@@ -4,16 +4,23 @@ uniform float uProgress;
 
 attribute float aSize;
 
-float remap(float value, float originMin, float originMax, float destinationMin, float destinationMax) {
-    return destinationMin + (value - originMin) * (destinationMax - destinationMin) / (originMax - originMin);
-}
+#include ../../utils;
+
 
 void main() {
     vec3 newPosition = position;
     
-    // 爆炸
-    
+    // 爆炸进度 0 - 0.1
+    float explodingProgress = remap(uProgress, 0.0, 0.1, 0.0, 1.0);
+    // clamp(x, minVal, maxVal) 如果 x 小于 minVal，则返回 minVal；如果 x 大于 maxVal，则返回 maxVal；否则返回 x
+    explodingProgress = clamp(explodingProgress, 0.0, 1.0);
+    // 让explodingProgress从0-1的变化过程先快后慢
+    // https://www.desmos.com/calculator?lang=zh-CN 网站可以看到对应的曲线图。公式：1-(1-x)^3;
+    explodingProgress = 1.0 - pow(1.0 - explodingProgress, 3.0);
+    newPosition *= explodingProgress;
 
+    // 粒子下落阶段 0.1 - 1.0
+    float fallingProgress = remap(fallingProgress, 0.1, 1.0, 0.0, 1.0);
 
 
 
