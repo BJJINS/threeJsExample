@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { camera, gui, scene, canvas, renderer } from "../template";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
-import vertexShader from "./vertexShader.glsl?raw";
-import fragmentShader from "./fragShader.glsl?raw";
+import vertexShader from "./vertexShader.glsl";
+import fragmentShader from "./fragShader.glsl";
 camera.position.set(3, 3, 3);
 camera.lookAt(0, 0, 0);
 new OrbitControls(camera, canvas);

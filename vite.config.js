@@ -1,6 +1,7 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
+import glsl from 'vite-plugin-glsl';
 import fs from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -28,6 +29,7 @@ function scanPages() {
 
 
 export default defineConfig({
+    plugins: [glsl()],
     build: {
         rollupOptions: {
             input: scanPages()

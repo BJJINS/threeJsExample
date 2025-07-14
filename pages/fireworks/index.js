@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { camera, canvas, renderer, scene, size as winSize, textureLoader } from "../template";
-import vertexShader from "./shaders/vertex.glsl?raw";
-import fragmentShader from "./shaders/fragment.glsl?raw";
+import vertexShader from "./shaders/vertex.glsl";
+import fragmentShader from "./shaders/fragment.glsl";
 import gsap from "gsap";
 
 
@@ -40,6 +40,7 @@ const createFireworks = (count, position, size, texture, radius, color) => {
     const sizesArray = new Float32Array(count);
 
     for (let i = 0; i < count; i++) {
+        // 随机创建烟花粒子的位置，让这些粒子的位置像个球一样
         spherical.set(radius * (0.75 + Math.random() * 0.25), Math.random() * Math.PI, Math.random() * Math.PI * 2);
         fireworkPosition.setFromSpherical(spherical);
 
@@ -48,6 +49,7 @@ const createFireworks = (count, position, size, texture, radius, color) => {
         positionsArray[i3 + 1] = fireworkPosition.y;
         positionsArray[i3 + 2] = fireworkPosition.z;
 
+        // 每个粒子的大小
         sizesArray[i] = Math.random();
 
     }
@@ -55,6 +57,8 @@ const createFireworks = (count, position, size, texture, radius, color) => {
     geometry.setAttribute("position", new THREE.BufferAttribute(positionsArray, 3));
     geometry.setAttribute("aSize", new THREE.BufferAttribute(sizesArray, 1));
 
+
+    // 翻转纹理，纹理的位置上下颠倒
     texture.flipY = false;
     const material = new THREE.ShaderMaterial({
         depthWrite: false,
@@ -70,28 +74,35 @@ const createFireworks = (count, position, size, texture, radius, color) => {
             uProgress: new THREE.Uniform(0)
         }
     });
-    const point = new THREE.Points(geometry, material);
-    point.position.copy(position);
-    scene.add(point);
+    const firework = new THREE.Points(geometry, material);
+    firework.position.copy(position);
+    scene.add(firework);
 
+    // 动画 3s 执行完，uProgress 0 - 1
     gsap.to(material.uniforms.uProgress, {
         value: 1,
         duration: 3,
         ease: "power1.out",
         onComplete: () => {
-            
+            // 动画完成后清理掉烟花
+            scene.remove(firework);
+            geometry.dispose();
+            material.dispose();
         }
     });
 };
 
-createFireworks(
-    1000,
-    new THREE.Vector3(0, 0, 0),
-    0.2,
-    textures[7],
-    1,
-    new THREE.Vector3(1.0, 0.0, 1.0)
-);
+
+window.addEventListener("click", () => {
+    createFireworks(
+        1000,
+        new THREE.Vector3(0, 0, 0),
+        0.2,
+        textures[7],
+        1,
+        new THREE.Vector3(1.0, 0.0, 1.0)
+    );
+});
 
 function render() {
     controls.update();
