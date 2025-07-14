@@ -10,34 +10,38 @@ document.body.appendChild(canvas);
 
 export const gui = new GUI();
 
-const size = {
+export const size = {
     width: window.innerWidth,
-    height: window.innerHeight
+    height: window.innerHeight,
+    pixelRatio: Math.min(window.devicePixelRatio, 2)
 };
+
+size.resolution = new THREE.Vector2(size.width * size.pixelRatio, size.height * size.pixelRatio);
+
 export const camera = new THREE.PerspectiveCamera(75, size.width / size.height, 0.1, 1000);
 
 export const scene = new THREE.Scene();
 
-const pixelRatio = Math.min(window.devicePixelRatio, 2);
 export const renderer = new THREE.WebGLRenderer({
     canvas,
-    antialias: pixelRatio < 2
+    antialias: size.pixelRatio < 2
 });
-renderer.setPixelRatio(pixelRatio);
+renderer.setPixelRatio(size.pixelRatio);
 renderer.setSize(size.width, size.height);
 
 // 画布跟随窗口变化
-window.onresize = function () {
+window.addEventListener("resize", () => {
     size.width = window.innerWidth;
     size.height = window.innerHeight;
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    size.pixelRatio = Math.min(window.devicePixelRatio, 2);
+    size.resolution.set(size.width * size.pixelRatio, size.height * size.pixelRatio);
+
+    renderer.setPixelRatio(size.pixelRatio);
     renderer.setSize(size.width, size.height);
     camera.aspect = size.width / size.height;
     camera.updateProjectionMatrix();
-};
-
-
+});
 
 export const textureLoader = new THREE.TextureLoader();
 export const gltfLoader = new GLTFLoader();
