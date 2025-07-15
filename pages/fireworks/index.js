@@ -1,15 +1,14 @@
-import * as THREE from "three";
-import { OrbitControls, Sky } from "three/examples/jsm/Addons.js";
-import { camera, canvas, renderer, scene, size as winSize, textureLoader, gui } from "../template";
-import vertexShader from "./shaders/vertex.glsl";
-import fragmentShader from "./shaders/fragment.glsl";
 import gsap from "gsap";
+import * as THREE from "three";
+import { Sky } from "three/examples/jsm/Addons.js";
+import { camera, gui, renderer, scene, textureLoader, size as winSize } from "../template";
+import fragmentShader from "./shaders/fragment.glsl";
+import vertexShader from "./shaders/vertex.glsl";
 
 
 camera.position.set(1.5, 0, 6);
 camera.lookAt(0, 0, 0);
-// const controls = new OrbitControls(camera, canvas);
-// controls.enableDamping = true;
+
 
 
 const textures = [
