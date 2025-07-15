@@ -7,6 +7,8 @@ import shadingFragmentShader from './shaders/shading/fragment.glsl';
 camera.position.set(7, 7, 7);
 camera.lookAt(0, 0, 0);
 
+scene.add(new THREE.AxesHelper(5))
+
 
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
@@ -22,6 +24,14 @@ directionalLightHelper.material.color.setRGB(0.1, 0.1, 1);
 directionalLightHelper.material.side = THREE.DoubleSide;
 directionalLightHelper.position.set(0, 0, 3);
 scene.add(directionalLightHelper);
+
+const pointLightHelper = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.1, 2),
+    new THREE.MeshBasicMaterial()
+);
+pointLightHelper.material.color.setRGB(1, 0.1, 0.1);
+pointLightHelper.position.set(0, 2.5, 0);
+scene.add(pointLightHelper);
 
 
 const materialParameters = {
