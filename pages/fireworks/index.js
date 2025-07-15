@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls, Sky } from "three/examples/jsm/Addons.js";
-import { camera, canvas, renderer, scene, size as winSize, textureLoader ,gui} from "../template";
+import { camera, canvas, renderer, scene, size as winSize, textureLoader, gui } from "../template";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 import gsap from "gsap";
@@ -37,8 +37,8 @@ const effectController = {
     turbidity: 10,
     rayleigh: 3,
     mieCoefficient: 0.005,
-    mieDirectionalG: 0.7,
-    elevation: 2,
+    mieDirectionalG: 0.95,
+    elevation: -2.2,
     azimuth: 180,
     exposure: renderer.toneMappingExposure
 };
@@ -67,7 +67,7 @@ gui.add(effectController, 'turbidity', 0.0, 20.0, 0.1).onChange(guiChanged);
 gui.add(effectController, 'rayleigh', 0.0, 4, 0.001).onChange(guiChanged);
 gui.add(effectController, 'mieCoefficient', 0.0, 0.1, 0.001).onChange(guiChanged);
 gui.add(effectController, 'mieDirectionalG', 0.0, 1, 0.001).onChange(guiChanged);
-gui.add(effectController, 'elevation', 0, 90, 0.1).onChange(guiChanged);
+gui.add(effectController, 'elevation', 0, 90, 0.01).onChange(guiChanged);
 gui.add(effectController, 'azimuth', - 180, 180, 0.1).onChange(guiChanged);
 gui.add(effectController, 'exposure', 0, 1, 0.0001).onChange(guiChanged);
 
