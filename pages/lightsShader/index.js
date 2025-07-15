@@ -4,9 +4,6 @@ import { camera, canvas, renderer, scene, gltfLoader, gui } from "../template";
 import shadingVertexShader from './shaders/shading/vertex.glsl';
 import shadingFragmentShader from './shaders/shading/fragment.glsl';
 
-const axes = new THREE.AxesHelper();
-scene.add(axes);
-
 camera.position.set(7, 7, 7);
 camera.lookAt(0, 0, 0);
 
@@ -14,16 +11,27 @@ camera.lookAt(0, 0, 0);
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 
+/**
+ * Light helpers
+ */
+const directionalLightHelper = new THREE.Mesh(
+    new THREE.PlaneGeometry(),
+    new THREE.MeshBasicMaterial()
+);
+directionalLightHelper.material.color.setRGB(0.1, 0.1, 1);
+directionalLightHelper.material.side = THREE.DoubleSide;
+directionalLightHelper.position.set(0, 0, 3);
+scene.add(directionalLightHelper);
 
 
-const materialParameters = {};
-materialParameters.color = '#ffffff';
+const materialParameters = {
+    color: "#fff"
+};
 
 const material = new THREE.ShaderMaterial({
     vertexShader: shadingVertexShader,
     fragmentShader: shadingFragmentShader,
-    uniforms:
-    {
+    uniforms: {
         uColor: new THREE.Uniform(new THREE.Color(materialParameters.color)),
     }
 });
@@ -53,7 +61,7 @@ scene.add(sphere);
 // Suzanne
 let suzanne = null;
 gltfLoader.load(
-    './suzanne.glb',
+    import.meta.resolve("./static/suzanne.glb"),
     (gltf) => {
         suzanne = gltf.scene;
         suzanne.traverse((child) => {
