@@ -5,7 +5,7 @@ attribute float aTimeMultiplier;
 
 attribute float aSize;
 
-#include ../../utils;
+#include ../../shaders/remap;
 
 void main() {
     vec3 newPosition = position;

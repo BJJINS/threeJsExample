@@ -3,9 +3,9 @@ uniform vec3 uColor;
 varying vec3 vNormal;
 varying vec3 vPosition;
 
-#include ../includes/ambientLight;
-#include ../includes/directionLight;
-#include ../includes/pointLight;
+#include ../../shaders/ambientLight;
+#include ../../shaders/directionLight;
+#include ../../shaders/pointLight;
 
 void main() {
     vec3 color = uColor;

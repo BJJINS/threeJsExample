@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { camera, canvas, renderer, scene, gltfLoader, gui } from "../template";
-import shadingVertexShader from './shaders/shading/vertex.glsl';
-import shadingFragmentShader from './shaders/shading/fragment.glsl';
+import shadingVertexShader from './shaders/vertex.glsl';
+import shadingFragmentShader from './shaders/fragment.glsl';
 
 camera.position.set(7, 7, 7);
 camera.lookAt(0, 0, 0);
