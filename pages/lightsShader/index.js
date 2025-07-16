@@ -71,7 +71,7 @@ scene.add(sphere);
 // Suzanne
 let suzanne = null;
 gltfLoader.load(
-    import.meta.resolve("./static/suzanne.glb"),
+    import.meta.resolve("../../models/suzanne.glb"),
     (gltf) => {
         suzanne = gltf.scene;
         suzanne.traverse((child) => {

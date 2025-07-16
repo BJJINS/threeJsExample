@@ -1,14 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { camera, canvas, renderer, scene, gltfLoader, gui } from "../template";
-import suzannePath from "./static/suzanne.glb?url";
+import suzannePath from "../../models/suzanne.glb?url";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
-
-
-
-const axes = new THREE.AxesHelper(10);
-scene.add(axes);
 
 camera.position.set(0, 0, 10);
 camera.lookAt(0, 0, 0);
@@ -76,16 +71,16 @@ function render() {
     material.uniforms.uTime.value = elapsedTime;
 
     // Rotate objects
-    // if (suzanne) {
-    //     suzanne.rotation.x = - elapsedTime * 0.1;
-    //     suzanne.rotation.y = elapsedTime * 0.2;
-    // }
+    if (suzanne) {
+        suzanne.rotation.x = - elapsedTime * 0.1;
+        suzanne.rotation.y = elapsedTime * 0.2;
+    }
 
-    // sphere.rotation.x = - elapsedTime * 0.1;
-    // sphere.rotation.y = elapsedTime * 0.2;
+    sphere.rotation.x = - elapsedTime * 0.1;
+    sphere.rotation.y = elapsedTime * 0.2;
 
-    // torusKnot.rotation.x = - elapsedTime * 0.1;
-    // torusKnot.rotation.y = elapsedTime * 0.2;
+    torusKnot.rotation.x = - elapsedTime * 0.1;
+    torusKnot.rotation.y = elapsedTime * 0.2;
     controls.update();
     renderer.render(scene, camera);
     requestAnimationFrame(render);
