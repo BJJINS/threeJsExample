@@ -9,6 +9,7 @@ export const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
 
 export const gui = new GUI();
+gui.close();
 
 export const size = {
     width: window.innerWidth,

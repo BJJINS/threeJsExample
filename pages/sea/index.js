@@ -4,11 +4,12 @@ import { camera, canvas, renderer, scene, gui } from "../template";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
 camera.position.set(1, 1, 1);
 camera.lookAt(0, 0, 0);
 const orbitControls = new OrbitControls(camera, canvas);
 orbitControls.enableDamping = true;
-scene.add(new THREE.AxesHelper(5));
+
 
 const parameters = {
     depthColor: '#ff4000',
@@ -23,6 +24,7 @@ gui.addColor(parameters, 'surfaceColor').onChange(() => {
 });
 
 const waterGeometry = new THREE.PlaneGeometry(2, 2, 512, 512);
+waterGeometry.deleteAttribute("normal");
 
 const waterMaterial = new THREE.ShaderMaterial({
     vertexShader,
