@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { camera, gui, renderer, scene, canvas, textureLoader } from "../template";
-import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { Lensflare, LensflareElement, OrbitControls } from "three/examples/jsm/Addons.js";
 import earthVertexShader from "./vertex.glsl";
 import earthFragmentShader from "./fragment.glsl";
 import day from "./static/earth/day.jpg?url";
@@ -8,6 +8,11 @@ import night from "./static/earth/night.jpg?url";
 import specularClouds from "./static/earth/specularClouds.jpg?url";
 import atmosphereVertexShader from "./atmosphereVertex.glsl";
 import atmosphereFragmentShader from "./atmosphereFragment.glsl";
+import lensflare0 from "./static/lenses/lensflare0.png?url";
+import lensflare1 from "./static/lenses/lensflare1.png?url";
+
+const textureFlare0 = textureLoader.load(lensflare0);
+const textureFlare1 = textureLoader.load(lensflare1);
 
 const dayTexture = textureLoader.load(day);
 const nightTexture = textureLoader.load(night);
@@ -18,9 +23,7 @@ nightTexture.colorSpace = THREE.SRGBColorSpace;
 dayTexture.anisotropy = 8;
 nightTexture.anisotropy = 8;
 
-scene.add(new THREE.AxesHelper(5));
-renderer.setClearColor('#333333')
-scene.add(new THREE.AxesHelper(5));
+renderer.setClearColor('#333333');
 camera.position.x = 4;
 camera.position.y = 5;
 camera.position.z = 4;
@@ -50,17 +53,20 @@ const atmosphereMaterial = new THREE.ShaderMaterial({
 
 
 // 太阳
-const sun = new THREE.Mesh(
-    new THREE.SphereGeometry(0.2),
-    new THREE.MeshBasicMaterial()
-);
-scene.add(sun);
+const sunLight = new THREE.PointLight(0xffffff, 1.5, 2000, 0);
+sunLight.color.setHSL(0.08, 0.8, 0.5);
+scene.add(sunLight);
+const lensflare = new Lensflare();
+lensflare.addElement(new LensflareElement(textureFlare0, 128, 0, sunLight.color));
+lensflare.addElement(new LensflareElement(textureFlare1, 60, 0.1));
+lensflare.addElement(new LensflareElement(textureFlare1, 70, 0.2));
+lensflare.addElement(new LensflareElement(textureFlare1, 120, 0.3));
+sunLight.add(lensflare);
 const sunSpherical = new THREE.Spherical(1, Math.PI / 2, 0);
 const sunDirection = new THREE.Vector3();
 const updateSun = () => {
     sunDirection.setFromSpherical(sunSpherical);
-    sun.position.copy(sunDirection);
-    sun.position.multiplyScalar(5);
+    sunLight.position.copy(sunDirection.clone().multiplyScalar(5));
     atmosphereMaterial.uniforms.uSunDirection.value.copy(sunDirection);
 };
 updateSun();
