@@ -14,7 +14,7 @@ void main() {
     vColor = vec3(pow(pictureIntensity, 2.0));
 
     // Point size
-    gl_PointSize = 0.3 * uResolution.y * pictureIntensity;
+    gl_PointSize = 0.15 * uResolution.y * pictureIntensity;
     // 给粒子添加透视效果（使其在远处看起来更小）
     gl_PointSize *= (1.0 / -viewPosition.z);
 }
