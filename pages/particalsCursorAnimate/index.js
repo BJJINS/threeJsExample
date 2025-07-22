@@ -1,8 +1,11 @@
 import * as THREE from "three";
-import { camera, gui, renderer, scene, canvas, size } from "../template";
+import { camera, renderer, scene, canvas, size, textureLoader } from "../template";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import particlesVertexShader from "./particlesVertex.glsl";
 import particlesFragmentShader from "./particlesFragment.glsl";
+import dog from "./static/picture-1.png?url";
+
+const dogTexture = textureLoader.load(dog);
 
 
 camera.fov = 35;
@@ -21,6 +24,7 @@ const particlesMaterial = new THREE.ShaderMaterial({
     fragmentShader: particlesFragmentShader,
     uniforms: {
         uResolution: new THREE.Uniform(size.resolution),
+        uPictureTexture: new THREE.Uniform(dogTexture),
     }
 });
 
