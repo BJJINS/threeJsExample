@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "glsl",
-        "Raycaster"
+        "Raycaster",
+        "smoothstep"
     ]
 }
