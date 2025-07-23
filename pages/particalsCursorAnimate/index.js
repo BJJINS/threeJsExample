@@ -43,7 +43,8 @@ scene.add(particles);
 
 const rayCaster = new THREE.Raycaster();
 const screenCursor = new THREE.Vector2(9999, 9999);
-const canvasCursor = new THREE.Vector2(999, 999);
+const canvasCursor = new THREE.Vector2(9999, 9999);
+const canvasCursorPrevious = new THREE.Vector2(9999, 9999);
 window.addEventListener("pointermove", (e) => {
     screenCursor.x = (e.clientX / size.width) * 2 - 1;
     screenCursor.y = 1 - (e.clientY / size.height) * 2;
@@ -63,8 +64,12 @@ function render() {
     displacement.context.globalAlpha = 0.02;
     displacement.context.fillRect(0, 0, displacement.canvas.width, displacement.canvas.height);
     displacement.context.globalCompositeOperation = 'lighten';
-    displacement.context.globalAlpha = 1;
+
     const glowSize = displacement.canvas.width * 0.25;
+    const cursorDistance = canvasCursorPrevious.distanceTo(canvasCursor);
+    const alpha = Math.min(cursorDistance * 0.1, 1);
+    displacement.context.globalAlpha = alpha;
+    canvasCursorPrevious.copy(canvasCursor);
     displacement.context.drawImage(
         displacement.image,
         canvasCursor.x - glowSize / 2,
