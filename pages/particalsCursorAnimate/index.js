@@ -14,7 +14,6 @@ camera.position.set(0, 0, 18);
 camera.lookAt(0, 0, 0);
 const orbitControl = new OrbitControls(camera, renderer.domElement);
 orbitControl.enableDamping = true;
-scene.add(new THREE.AxesHelper(5));
 
 
 // 用来和raycast进行碰撞检测
