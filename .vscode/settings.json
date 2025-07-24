@@ -1,9 +1,10 @@
 {
     "cSpell.words": [
+        "colorspace",
         "glsl",
+        "gsap",
         "Raycaster",
         "smoothstep",
-        "colorspace",
         "tonemapping"
     ]
 }
