@@ -46,7 +46,6 @@ canvas.height = 128;
 const context = canvas.getContext("2d");
 context.globalCompositeOperation = "lighter";
 context.fillRect(0, 0, canvas.width, canvas.height);
-document.body.appendChild(canvas);
 const glow = new Image();
 glow.src = import.meta.resolve("./static/glow.png");
 const glowSize = canvas.width * 0.25;
