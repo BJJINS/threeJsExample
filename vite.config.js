@@ -30,11 +30,6 @@ function scanPages() {
 
 export default defineConfig({
     plugins: [glsl()],
-    resolve: {
-        alias: {
-            '@models': resolve(__dirname, 'models'),
-        },
-    },
     build: {
         rollupOptions: {
             input: scanPages()

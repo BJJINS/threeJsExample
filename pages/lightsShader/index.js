@@ -3,12 +3,11 @@ import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { camera, canvas, renderer, scene, gltfLoader, gui } from "../template";
 import shadingVertexShader from './shaders/vertex.glsl';
 import shadingFragmentShader from './shaders/fragment.glsl';
-import suzannePath from "@models/suzanne.glb?url";
 
 camera.position.set(7, 7, 7);
 camera.lookAt(0, 0, 0);
 
-scene.add(new THREE.AxesHelper(5))
+scene.add(new THREE.AxesHelper(5));
 
 
 const controls = new OrbitControls(camera, canvas);
@@ -72,7 +71,7 @@ scene.add(sphere);
 // Suzanne
 let suzanne = null;
 gltfLoader.load(
-    suzannePath,
+    "/models/suzanne.glb",
     (gltf) => {
         suzanne = gltf.scene;
         suzanne.traverse((child) => {

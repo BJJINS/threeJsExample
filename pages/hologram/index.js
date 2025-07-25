@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { camera, canvas, renderer, scene, gltfLoader, gui } from "../template";
-import suzannePath from "@models/suzanne.glb?url";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 
@@ -24,18 +23,18 @@ gui.addColor(rendererParameters, 'clearColor')
 
 const material = new THREE.ShaderMaterial({
     transparent: true,
-    depthWrite:false,
+    depthWrite: false,
     vertexShader,
     fragmentShader,
     uniforms: {
         uTime: new THREE.Uniform(0),
         uColor: new THREE.Uniform(new THREE.Color("#00eeff"))
     },
-    side:THREE.DoubleSide,
+    side: THREE.DoubleSide,
     blending: THREE.AdditiveBlending
 });
 
-gui.addColor(material.uniforms.uColor, 'value')
+gui.addColor(material.uniforms.uColor, 'value');
 
 const torusKnot = new THREE.Mesh(
     new THREE.TorusKnotGeometry(0.6, 0.25, 128, 32),
@@ -54,7 +53,7 @@ scene.add(sphere);
 
 let suzanne = null;
 gltfLoader.load(
-    suzannePath,
+    "/models/suzanne.glb",
     (gltf) => {
         suzanne = gltf.scene;
         suzanne.traverse((child) => {

@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { camera, canvas, renderer, scene, gltfLoader, gui, size as winSize } from "../template";
-import suzannePath from "@models/suzanne.glb?url";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 
@@ -75,7 +74,7 @@ scene.add(sphere);
 
 let suzanne = null;
 gltfLoader.load(
-    suzannePath,
+    "/models/suzanne.glb",
     (gltf) => {
         suzanne = gltf.scene;
         suzanne.traverse((child) => {
