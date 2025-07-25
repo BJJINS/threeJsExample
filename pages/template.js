@@ -1,10 +1,7 @@
 import * as THREE from "three";
 import "./style.css";
 import GUI from "three/examples/jsm/libs/lil-gui.module.min.js";
-import { GLTFLoader } from "three/examples/jsm/Addons.js";
-/**
- * @type {HTMLCanvasElement}
- */
+import { GLTFLoader, DRACOLoader } from "three/examples/jsm/Addons.js";
 export const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
 
@@ -44,4 +41,9 @@ window.addEventListener("resize", () => {
 
 export const textureLoader = new THREE.TextureLoader();
 export const gltfLoader = new GLTFLoader();
+export const useDraco = () => {
+    const draco = new DRACOLoader();
+    draco.setDecoderPath("/draco/");
+    gltfLoader.setDRACOLoader(draco);
+};
 export const cubeTextureLoader = new THREE.CubeTextureLoader();

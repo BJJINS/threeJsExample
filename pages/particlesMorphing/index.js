@@ -1,15 +1,30 @@
 import * as THREE from "three";
-import { camera, renderer, scene, gui, size, gltfLoader } from "../template";
-import { DRACOLoader, OrbitControls } from "three/examples/jsm/Addons.js";
+import { camera, renderer, scene, gui, size, gltfLoader, useDraco } from "../template";
+import { OrbitControls } from "three/examples/jsm/Addons.js";
 import gsap from "gsap";
 import vertexShader from "./vertex.glsl";
 import fragmentShader from "./fragment.glsl";
 import model from "./static/models.glb?url";
-const draco = new DRACOLoader();
-draco.setDecoderPath("/draco/")
-gltfLoader.setDRACOLoader(draco);
+
+useDraco();
 gltfLoader.load(model, (gltf) => {
     scene.add(gltf.scene);
+
+    const geometry = new THREE.SphereGeometry(3);
+    geometry.setIndex(null);
+    const material = new THREE.ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        uniforms: {
+            u_size: new THREE.Uniform(0.4),
+            u_resolution: new THREE.Uniform(size.resolution)
+        }
+    });
+
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
 });
 
 
@@ -30,21 +45,7 @@ gui.addColor(debugObject, 'clearColor')
     .onChange(() => { renderer.setClearColor(debugObject.clearColor); });
 renderer.setClearColor(debugObject.clearColor);
 
-const geometry = new THREE.SphereGeometry(3);
-geometry.setIndex(null);
-const material = new THREE.ShaderMaterial({
-    vertexShader,
-    fragmentShader,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    uniforms: {
-        u_size: new THREE.Uniform(0.4),
-        u_resolution: new THREE.Uniform(size.resolution)
-    }
-});
 
-const points = new THREE.Points(geometry, material);
-scene.add(points);
 
 
 const tick = () => {
