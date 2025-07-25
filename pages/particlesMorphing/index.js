@@ -1,9 +1,17 @@
 import * as THREE from "three";
-import { camera, renderer, scene, gui, size } from "../template";
-import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { camera, renderer, scene, gui, size, gltfLoader } from "../template";
+import { DRACOLoader, OrbitControls } from "three/examples/jsm/Addons.js";
 import gsap from "gsap";
 import vertexShader from "./vertex.glsl";
 import fragmentShader from "./fragment.glsl";
+import model from "./static/models.glb?url";
+const draco = new DRACOLoader();
+draco.setDecoderPath("/draco/")
+gltfLoader.setDRACOLoader(draco);
+gltfLoader.load(model, (gltf) => {
+    scene.add(gltf.scene);
+});
+
 
 camera.fov = 35;
 camera.far = 100;

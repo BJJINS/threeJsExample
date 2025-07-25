@@ -30,7 +30,7 @@ function scanPages() {
 
 export default defineConfig({
     plugins: [glsl()],
-        resolve: {
+    resolve: {
         alias: {
             '@models': resolve(__dirname, 'models'),
         },
