@@ -6,9 +6,9 @@ import vertexShader from "./vertex.glsl";
 import fragmentShader from "./fragment.glsl";
 import model from "./static/models.glb?url";
 
-useDraco();
 scene.add(new THREE.AxesHelper(4));
-gltfLoader.load(model, (gltf) => {
+gltfLoader.useDraco();
+gltfLoader.loader.load(model, (gltf) => {
     let maxCount = 0;
     const newPositions = [];
     let currentIndex = 0;

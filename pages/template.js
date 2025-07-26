@@ -40,10 +40,14 @@ window.addEventListener("resize", () => {
 });
 
 export const textureLoader = new THREE.TextureLoader();
-export const gltfLoader = new GLTFLoader();
-export const useDraco = () => {
-    const draco = new DRACOLoader();
-    draco.setDecoderPath("/draco/");
-    gltfLoader.setDRACOLoader(draco);
+
+const gltfLoader = new GLTFLoader();
+export const gltf = {
+    loader: gltfLoader,
+    useDraco: () => {
+        const draco = new DRACOLoader();
+        draco.setDecoderPath("/draco/");
+        gltfLoader.setDRACOLoader(draco);
+    }
 };
 export const cubeTextureLoader = new THREE.CubeTextureLoader();
