@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
-import { camera, canvas, renderer, scene, gltfLoader, textureLoader } from "../template";
+import { camera, canvas, renderer, scene, gltf, textureLoader } from "../template";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 
@@ -13,7 +13,7 @@ controls.target.y = 3;
 controls.enableDamping = true;
 
 
-gltfLoader.load(
+gltf.loader.load(
     import.meta.resolve("./static/bakedModel.glb"),
     (gltf) => {
         // 最大支持的各向异性值

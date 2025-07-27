@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
-import { camera, canvas, renderer, scene, gltfLoader, gui, size as winSize } from "../template";
+import { camera, canvas, renderer, scene, gltf, gui, size as winSize } from "../template";
 import vertexShader from "./shaders/vertex.glsl";
 import fragmentShader from "./shaders/fragment.glsl";
 
@@ -73,7 +73,7 @@ sphere.position.x = - 3;
 scene.add(sphere);
 
 let suzanne = null;
-gltfLoader.load(
+gltf.loader.load(
     "/models/suzanne.glb",
     (gltf) => {
         suzanne = gltf.scene;
