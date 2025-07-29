@@ -3,6 +3,7 @@
         "colorspace",
         "glsl",
         "gltf",
+        "gpgpu",
         "gsap",
         "Raycaster",
         "smoothstep",
