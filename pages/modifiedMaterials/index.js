@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/Addons.js";
-import { camera, canvas, cubeTextureLoader, gltfLoader, renderer, scene, textureLoader } from "../template";
+import { camera, canvas, cubeTextureLoader, gltf, renderer, scene, textureLoader } from "../template";
 
 renderer.shadowMap.enabled = true;
 
@@ -126,7 +126,7 @@ const material = new THREE.MeshStandardMaterial({
 
 
 
-gltfLoader.load(
+gltf.loader.load(
     import.meta.resolve("./static/models/LeePerrySmith/LeePerrySmith.glb"),
     (gltf) => {
         // Model
