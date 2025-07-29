@@ -42,12 +42,13 @@ const baseParticlesTexture = gpgpu.computation.createTexture();
 for (let i = 0; i < baseGeometry.count; i++) {
     const i3 = i * 3;
     const i4 = i * 4;
+
     baseParticlesTexture.image.data[i4 + 0] = baseGeometry.instance.attributes.position.array[i3 + 0];
     baseParticlesTexture.image.data[i4 + 1] = baseGeometry.instance.attributes.position.array[i3 + 1];
     baseParticlesTexture.image.data[i4 + 2] = baseGeometry.instance.attributes.position.array[i3 + 2];
     baseParticlesTexture.image.data[i4 + 3] = 0;
 }
-gpgpu.particlesVariable = gpgpu.computation.addVariable("uParticles", gpgpuParticlesShader, baseParticlesTexture);
+gpgpu.particlesVariable = gpgpu.computation.addVariable('uParticles', gpgpuParticlesShader, baseParticlesTexture);
 gpgpu.computation.setVariableDependencies(gpgpu.particlesVariable, [gpgpu.particlesVariable]);
 gpgpu.computation.init();
 
@@ -68,8 +69,20 @@ scene.add(gpgpu.debug);
 const particles = {};
 // Geometry
 const particlesUvArray = new Float32Array(baseGeometry.count * 2);
+for (let y = 0; y < gpgpu.size; y++) {
+    for (let x = 0; x < gpgpu.size; x++) {
+        const i = y * gpgpu.size + x;
+        const i2 = i * 2;
+        const uvX = (x + 0.5) / gpgpu.size;
+        const uvY = (y + 0.5) / gpgpu.size;
+        particlesUvArray[i2] = uvX;
+        particlesUvArray[i2 + 1] = uvY;
+    }
+}
+
 particles.geometry = new THREE.BufferGeometry();
 particles.geometry.setDrawRange(0, baseGeometry.count);
+particles.geometry.setAttribute("aParticlesUv", new THREE.BufferAttribute(particlesUvArray, 2));
 // Material
 particles.material = new THREE.ShaderMaterial({
     vertexShader,
@@ -79,7 +92,6 @@ particles.material = new THREE.ShaderMaterial({
         uSize: new THREE.Uniform(0.4),
         uResolution: new THREE.Uniform(size.resolution),
         uParticlesTexture: new THREE.Uniform(),
-
     }
 });
 
