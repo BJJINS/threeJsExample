@@ -23,7 +23,7 @@ const initGpgpu = (renderer, positionsArray, count) => {
     }
     const particlesVariable = gpuComputationRender.addVariable("u_particlesTexture", gpgpuShader, particlesTexture);
     gpuComputationRender.setVariableDependencies(particlesVariable, [particlesVariable]);
-
+    gpuComputationRender.init();
     return {
         gpuComputationRender,
         particlesTexture,

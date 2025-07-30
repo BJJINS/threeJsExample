@@ -14,31 +14,34 @@ const main = async () => {
     const { position, color } = boat.geometry.attributes;
     const { count, array } = position;
 
-    const { gpuComputationRender, uv } = initGpgpu(renderer, array, count);
+    const { gpuComputationRender, uv, particlesVariable } = initGpgpu(renderer, array, count);
 
-    const geometry = new THREE.SphereGeometry(3);
+    const geometry = new THREE.BufferGeometry();
+    geometry.setDrawRange(0, count);
+    geometry.setAttribute('a_uv', new THREE.BufferAttribute(uv, 2));
+    geometry.setAttribute("a_color", color);
     const material = new THREE.ShaderMaterial({
         vertexShader,
         fragmentShader,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
+        transparent: true,
         uniforms: {
-            u_size: new THREE.Uniform(0.2),
-            u_resolution: new THREE.Uniform(size.resolution)
+            u_size: new THREE.Uniform(0.07),
+            u_resolution: new THREE.Uniform(size.resolution),
+            u_particlesTexture: new THREE.Uniform(),
+            u_time: new THREE.Uniform(0),
         }
     });
     const points = new THREE.Points(geometry, material);
     scene.add(points);
     useGUI(material);
 
-    const tick = () => {
-        gpuComputationRender.compute();
-    };
 
-    tick();
-
+    return {
+        material,
+        gpuComputationRender,
+        particlesVariable
+    }
 };
 
-
-main();
+export default main
 
