@@ -1,108 +1,94 @@
 import * as THREE from 'three';
-import { camera, renderer, gui, scene, size, gltf } from "../template";
+import { camera, scene, renderer, gui, gltf, size } from "../template";
 import { GPUComputationRenderer, OrbitControls } from 'three/examples/jsm/Addons.js';
 import particlesVertexShader from "./particles/vertex.glsl";
 import particlesFragmentShader from "./particles/frag.glsl";
-import gpgpuShader from "./gpgpu.glsl";
+import computeFragmentShader from "./gpgpu.glsl";
 import boatPath from "./static/model.glb?url";
-
-
-camera.position.set(12.5, 8, 11);
-camera.lookAt(0, 0, 0);
+camera.position.set(10, 10, 10);
 camera.fov = 35;
 camera.far = 100;
+camera.lookAt(0, 0, 0);
 camera.updateProjectionMatrix();
-scene.add(new THREE.AxesHelper(5));
-
-const debugObject = {
-    clearColor: '#201919'
-};
-renderer.setClearColor(debugObject.clearColor);
-gui.addColor(debugObject, 'clearColor').onChange(() => {
-    renderer.setClearColor(debugObject.clearColor);
-});
-
-const obitControls = new OrbitControls(camera, renderer.domElement);
-obitControls.enableDamping = true;
+const orbitCOntrols = new OrbitControls(camera, renderer.domElement);
+orbitCOntrols.enableDamping = true;
 
 gltf.useDraco();
-const { scene: { children: [boat] } } = await gltf.loader.loadAsync(boatPath);
-const { color: boatColor, position: { array: boatPositionArray, count: boatPositionCount } } = boat.geometry.attributes;
+gltf.loader.loadAsync(boatPath).then((gltf) => {
+    const { position: { array, count }, color } = gltf.scene.children[0].geometry.attributes;
+    const computationSize = Math.ceil(Math.sqrt(count));
 
-const gpgpuSize = Math.ceil(Math.sqrt(boatPositionCount));
-const gpgpuComputation = new GPUComputationRenderer(gpgpuSize, gpgpuSize, renderer);
-const initParticlesTexture = gpgpuComputation.createTexture();
-for (let y = 0; y < gpgpuSize; y++) {
-    for (let x = 0; x < gpgpuSize; x++) {
-        const i = y * gpgpuSize + x;
-        const i4 = i * 4;
-        const i3 = i * 3;
-        initParticlesTexture.image.data[i4] = boatPositionArray[i3];
-        initParticlesTexture.image.data[i4 + 1] = boatPositionArray[i3 + 1];
-        initParticlesTexture.image.data[i4 + 2] = boatPositionArray[i3 + 2];
-        initParticlesTexture.image.data[i4 + 3] = Math.random();
+    const computation = new GPUComputationRenderer(computationSize, computationSize, renderer);
+    const particlesTexture = computation.createTexture();
+    const particlesTextureUv = new Float32Array(count * 2);
+    const randomParticleArray = new Float32Array(count);
+
+    for (let y = 0; y < computationSize; y++) {
+        for (let x = 0; x < computationSize; x++) {
+            const i = y * computationSize + x;
+            const i2 = i * 2;
+            const i3 = i * 3;
+            const i4 = i * 4;
+            particlesTexture.image.data[i4] = array[i3];
+            particlesTexture.image.data[i4 + 1] = array[i3 + 1];
+            particlesTexture.image.data[i4 + 2] = array[i3 + 2];
+            particlesTexture.image.data[i4 + 3] = Math.random();
+
+            randomParticleArray[i] = Math.random();
+
+            particlesTextureUv[i2] = (x + 0.5) / computationSize;
+            particlesTextureUv[i2 + 1] = (y + 0.5) / computationSize;
+        }
     }
-}
-const gpgpuParticles = gpgpuComputation.addVariable("uParticlesTexture", gpgpuShader, initParticlesTexture);
-gpgpuParticles.material.uniforms.uTime = new THREE.Uniform(0);
-gpgpuParticles.material.uniforms.uBase = new THREE.Uniform(initParticlesTexture);
-gpgpuParticles.material.uniforms.uDeltaTime = new THREE.Uniform(0);
-gpgpuParticles.material.uniforms.uFlowFieldInfluence = new THREE.Uniform(0.5);
-gpgpuParticles.material.uniforms.uFlowFieldStrength = new THREE.Uniform(2)
-gpgpuParticles.material.uniforms.uFlowFieldFrequency = new THREE.Uniform(0.5)
-gui.add(gpgpuParticles.material.uniforms.uFlowFieldInfluence, 'value').min(0).max(1).step(0.001).name('uFlowfieldInfluence');
-gui.add(gpgpuParticles.material.uniforms.uFlowFieldStrength, 'value').min(0).max(10).step(0.001).name('uFlowfieldStrength')
-gui.add(gpgpuParticles.material.uniforms.uFlowFieldFrequency, 'value').min(0).max(1).step(0.001).name('uFlowfieldFrequency')
+    const particlesVariable = computation.addVariable("uParticles", computeFragmentShader, particlesTexture);
+    particlesVariable.material.uniforms.uTime = new THREE.Uniform(0);
+    particlesVariable.material.uniforms.uDeltaTime = new THREE.Uniform(0);
+    particlesVariable.material.uniforms.uBase = new THREE.Uniform(particlesTexture);
+    particlesVariable.material.uniforms.uFlowFieldFrequency = new THREE.Uniform(0.5);
+    particlesVariable.material.uniforms.uFlowFieldInfluence = new THREE.Uniform(0.5);
+
+    gui.add(particlesVariable.material.uniforms.uFlowFieldFrequency, "value", 0, 1, 0.01).name("uFlowFieldFrequency");
+    gui.add(particlesVariable.material.uniforms.uFlowFieldInfluence, "value", 0, 1, 0.01).name("uFlowFieldInfluence");
 
 
-gpgpuComputation.setVariableDependencies(gpgpuParticles, [gpgpuParticles]);
-gpgpuComputation.init();
 
-const particlesTextureUv = new Float32Array(boatPositionCount * 2);
-for (let y = 0; y < gpgpuSize; y++) {
-    for (let x = 0; x < gpgpuSize; x++) {
-        const i = y * gpgpuSize + x;
-        const i2 = i * 2;
-        const uvX = (x + 0.5) / gpgpuSize;
-        const uvY = (y + 0.5) / gpgpuSize;
-        particlesTextureUv[i2] = uvX;
-        particlesTextureUv[i2 + 1] = uvY;
-    }
-}
+    computation.setVariableDependencies(particlesVariable, [particlesVariable]);
+    computation.init();
 
-// particles
-const geometry = new THREE.BufferGeometry();
-geometry.setAttribute("aParticlesTextureUv", new THREE.BufferAttribute(particlesTextureUv, 2));
-geometry.setAttribute("aColor", boatColor);
-geometry.setDrawRange(0, boatPositionCount);
-const material = new THREE.ShaderMaterial({
-    vertexShader: particlesVertexShader,
-    fragmentShader: particlesFragmentShader,
-    uniforms: {
-        uSize: new THREE.Uniform(0.07),
-        uResolution: new THREE.Uniform(size.resolution),
-        uParticlesTexture: new THREE.Uniform()
-    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("aUv", new THREE.BufferAttribute(particlesTextureUv, 2));
+    geometry.setAttribute("aColor", color);
+    geometry.setAttribute("aRandomSize", new THREE.BufferAttribute(randomParticleArray, 1));
+    geometry.setDrawRange(0, count);
+    const material = new THREE.ShaderMaterial({
+        vertexShader: particlesVertexShader,
+        fragmentShader: particlesFragmentShader,
+        uniforms: {
+            uSize: new THREE.Uniform(0.07),
+            uResolution: new THREE.Uniform(size.resolution),
+            uParticlesTexture: new THREE.Uniform(),
+        }
+    });
+
+    gui.add(material.uniforms.uSize, "value", 0.001, 0.5, 0.01).name("uSize");
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+
+    const clock = new THREE.Clock();
+    let previewsTime = 0;
+    const tick = () => {
+        const elapsedTime = clock.getElapsedTime();
+        const deltaTime = elapsedTime - previewsTime;
+        previewsTime = elapsedTime;
+        particlesVariable.material.uniforms.uDeltaTime.value = deltaTime;
+        particlesVariable.material.uniforms.uTime.value = elapsedTime;
+        computation.compute();
+        material.uniforms.uParticlesTexture.value = computation.getCurrentRenderTarget(particlesVariable).texture;
+
+        orbitCOntrols.update();
+        renderer.render(scene, camera);
+        requestAnimationFrame(tick);
+    };
+    tick();
 });
-const points = new THREE.Points(geometry, material);
-scene.add(points);
 
-gui.add(material.uniforms.uSize, "value", 0.01, 0.1, 0.001).name("uSize");
-
-let previousTime = 0;
-const clock = new THREE.Clock();
-const tick = () => {
-    const elapsedTime = clock.getElapsedTime();
-    const deltaTime = elapsedTime - previousTime;
-    previousTime = elapsedTime;
-    gpgpuParticles.material.uniforms.uDeltaTime.value = deltaTime;
-    gpgpuParticles.material.uniforms.uTime.value = elapsedTime;
-
-    gpgpuComputation.compute();
-    material.uniforms.uParticlesTexture.value = gpgpuComputation.getCurrentRenderTarget(gpgpuParticles).texture;
-
-    obitControls.update();
-    renderer.render(scene, camera);
-    requestAnimationFrame(tick);
-};
-tick();
