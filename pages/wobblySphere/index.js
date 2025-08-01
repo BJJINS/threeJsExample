@@ -1,13 +1,16 @@
 import * as THREE from "three";
-import { scene, renderer, camera ,gui} from "../template";
+import { scene, renderer, camera, gui } from "../template";
 import { OrbitControls, RGBELoader } from "three/examples/jsm/Addons.js";
 import environmentMapPath from "./static/urban_alley_01_1k.hdr?url";
+import CustomShaderMaterial from "three-custom-shader-material/vanilla";
+import wobbleVertexShader from "./shaders/wobble/vertex.glsl"
+import fragmentShader from "./shaders/wobble/fragment.glsl"
 
 camera.fov = 35;
 camera.far = 100;
 camera.position.set(13, - 3, - 5);
 camera.updateProjectionMatrix();
-camera.lookAt(0,0,0);
+camera.lookAt(0, 0, 0);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -22,7 +25,11 @@ rgbeLoader.load(environmentMapPath, (environmentMap) => {
     scene.background = environmentMap;
     scene.environment = environmentMap;
 });
-const material = new THREE.MeshPhysicalMaterial({
+const material = new CustomShaderMaterial({
+    baseMaterial: THREE.MeshPhysicalMaterial,
+    vertexShader: wobbleVertexShader,
+    fragmentShader: fragmentShader,
+    // MeshPhysicalMaterial
     metalness: 0,
     roughness: 0.5,
     color: '#ffffff',
@@ -30,7 +37,7 @@ const material = new THREE.MeshPhysicalMaterial({
     ior: 1.5,
     thickness: 1.5,
     transparent: true,
-    wireframe: false
+    wireframe: false,
 });
 gui.add(material, 'metalness', 0, 1, 0.001);
 gui.add(material, 'roughness', 0, 1, 0.001);
