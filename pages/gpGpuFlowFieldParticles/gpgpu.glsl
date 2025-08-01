@@ -4,7 +4,7 @@ uniform sampler2D uBase;
 uniform float uFlowFieldFrequency;
 uniform float uFlowFieldInfluence;
 
-#include "./simplexNoise4d.glsl";
+#include "../shaders/simplexNoise4d.glsl";
 
 void main() {
     float time = uTime * 0.2;
