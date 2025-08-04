@@ -1,10 +1,13 @@
 {
     "cSpell.words": [
         "colorspace",
+        "fract",
         "glsl",
         "gltf",
         "gpgpu",
         "gsap",
+        "ifdef",
+        "mediump",
         "Raycaster",
         "smoothstep",
         "tonemapping"
