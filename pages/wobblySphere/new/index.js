@@ -5,6 +5,7 @@ import { scene, camera, renderer, gui } from "../../template";
 import environmentMapPath from "../static/urban_alley_01_1k.hdr?url";
 import fragmentShader from "./fragment.glsl";
 import vertexShader from "./vertex.glsl";
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 camera.fov = 35;
 camera.far = 100;
@@ -29,11 +30,26 @@ const debugObject = {};
 debugObject.colorA = '#0000ff';
 debugObject.colorB = '#ff0000';
 
+const uniforms = {
+    uTime: new THREE.Uniform(0),
+    uPositionFrequency: new THREE.Uniform(0.5),
+    uTimeFrequency: new THREE.Uniform(0.4),
+    uStrength: new THREE.Uniform(0.3),
+
+    uWrapPositionFrequency: new THREE.Uniform(0.38),
+    uWrapTimeFrequency: new THREE.Uniform(0.12),
+    uWrapStrength: new THREE.Uniform(0.17),
+
+    uColorA: new THREE.Uniform(new THREE.Color(debugObject.colorA)),
+    uColorB: new THREE.Uniform(new THREE.Color(debugObject.colorB))
+};
+
 
 const material = new CustomShaderMaterial({
     baseMaterial: THREE.MeshPhysicalMaterial,
     vertexShader,
     fragmentShader,
+    uniforms,
 
 
     metalness: 0,
@@ -46,6 +62,22 @@ const material = new CustomShaderMaterial({
     wireframe: false
 });
 
+const deptMaterial = new CustomShaderMaterial({
+    baseMaterial: THREE.MeshDepthMaterial,
+    uniforms,
+    vertexShader,
+    fragmentShader,
+    depthPacking: THREE.RGBADepthPacking
+});
+
+gui.add(uniforms.uTimeFrequency, "value", 0, 2, 0.001).name("uTimeFrequency");
+gui.add(uniforms.uPositionFrequency, "value", 0, 2, 0.001).name("uPositionFrequency");
+gui.add(uniforms.uStrength, "value", 0, 2, 0.001).name("uStrength");
+
+gui.add(uniforms.uWrapTimeFrequency, "value", 0, 2, 0.001).name("uWrapTimeFrequency");
+gui.add(uniforms.uWrapPositionFrequency, "value", 0, 2, 0.001).name("uWrapPositionFrequency");
+gui.add(uniforms.uWrapStrength, "value", 0, 2, 0.001).name("uWrapStrength");
+
 gui.add(material, 'metalness', 0, 1, 0.001);
 gui.add(material, 'roughness', 0, 1, 0.001);
 gui.add(material, 'transmission', 0, 1, 0.001);
@@ -53,9 +85,13 @@ gui.add(material, 'ior', 0, 10, 0.001);
 gui.add(material, 'thickness', 0, 10, 0.001);
 gui.addColor(material, 'color');
 
-const geometry = new THREE.IcosahedronGeometry(2.5, 50);
+
+let geometry = new THREE.IcosahedronGeometry(2.5, 50);
+geometry = mergeVertices(geometry);
+geometry.computeTangents();
 
 const wobble = new THREE.Mesh(geometry, material);
+wobble.customDepthMaterial = deptMaterial;
 wobble.receiveShadow = true;
 wobble.castShadow = true;
 scene.add(wobble);
@@ -79,8 +115,11 @@ directionalLight.shadow.normalBias = 0.05;
 directionalLight.position.set(0.25, 2, - 2.25);
 scene.add(directionalLight);
 
-const tick = () => {
 
+const clock = new THREE.Clock();
+const tick = () => {
+    const elapsedTime = clock.getElapsedTime();
+    uniforms.uTime.value = elapsedTime;
     renderer.render(scene, camera);
     requestAnimationFrame(tick);
 };
