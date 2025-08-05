@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { scene, renderer, camera, gui, gltf } from "../template";
+import { scene, renderer, camera, gui } from "../template";
 import { OrbitControls, RGBELoader } from "three/examples/jsm/Addons.js";
 import environmentMapPath from "./static/urban_alley_01_1k.hdr?url";
 import CustomShaderMaterial from "three-custom-shader-material/vanilla";
@@ -19,8 +19,6 @@ renderer.toneMappingExposure = 1;
 
 const orbitCOntrols = new OrbitControls(camera, renderer.domElement);
 orbitCOntrols.enableDamping = true;
-
-
 
 const rgbeLoader = new RGBELoader();
 rgbeLoader.load(environmentMapPath, (environmentMap) => {

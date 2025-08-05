@@ -9,6 +9,7 @@
         "ifdef",
         "mediump",
         "Raycaster",
+        "RGBE",
         "smoothstep",
         "tonemapping"
     ]
