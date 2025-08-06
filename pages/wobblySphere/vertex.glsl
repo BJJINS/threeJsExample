@@ -9,7 +9,7 @@ uniform float uWrapStrength;
 attribute vec4 tangent;
 varying float vWobble;
 
-#include "../../shaders/simplexNoise4d.glsl";
+#include "../shaders/simplexNoise4d.glsl";
 
 float getWobble(vec3 position) {
     vec3 warpedPosition = position;
