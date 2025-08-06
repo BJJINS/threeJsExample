@@ -9,6 +9,7 @@
         "gsap",
         "ifdef",
         "mediump",
+        "metalness",
         "Raycaster",
         "RGBE",
         "smoothstep",
