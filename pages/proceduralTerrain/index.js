@@ -1,7 +1,11 @@
 import * as THREE from 'three';
 import { scene, camera, renderer, gui } from "../template";
 import { OrbitControls, RGBELoader } from 'three/examples/jsm/Addons.js';
+import { Brush, Evaluator, SUBTRACTION } from "three-bvh-csg";
+import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 import spruikSunrisePath from "./static/spruit_sunrise.hdr?url";
+import vertexShader from "./vertex.glsl"
+import fragmentShader from "./fragment.glsl"
 camera.position.set(-10, 6, -2);
 camera.lookAt(0, 0, 0);
 camera.fov = 35;
@@ -22,11 +26,7 @@ rgbeLoader.load(spruikSunrisePath, (environmentMap) => {
     scene.environment = environmentMap;
 });
 
-const placeholder = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(2, 5),
-    new THREE.MeshPhysicalMaterial()
-);
-scene.add(placeholder);
+
 const directionalLight = new THREE.DirectionalLight('#ffffff', 2);
 directionalLight.position.set(6.25, 3, 4);
 directionalLight.castShadow = true;
@@ -38,6 +38,38 @@ directionalLight.shadow.camera.right = 8;
 directionalLight.shadow.camera.bottom = -8;
 directionalLight.shadow.camera.left = -8;
 scene.add(directionalLight);
+
+const boardFill = new Brush(new THREE.BoxGeometry(11, 2, 11));
+const boardHole = new Brush(new THREE.BoxGeometry(10, 2.1, 10));
+const evaluator = new Evaluator();
+boardFill.material.color.set('red');
+boardHole.material = new THREE.MeshNormalMaterial();
+// boardHole.position.y = 0.2;
+// boardHole.updateMatrixWorld();
+const board = evaluator.evaluate(boardFill, boardHole, SUBTRACTION);
+board.geometry.clearGroups();
+board.material = new THREE.MeshStandardMaterial({ color: '#ffffff', metalness: 0, roughness: 0.3 });
+board.receiveShadow = true;
+board.castShadow = true;
+scene.add(board);
+
+const geometry = new THREE.PlaneGeometry(10, 10, 500, 500);
+geometry.rotateX(- Math.PI * 0.5);
+const material = new CustomShaderMaterial({
+    baseMaterial: THREE.MeshStandardMaterial,
+    vertexShader,
+    fragmentShader,
+
+    metalness: 0,
+    roughness: 0.5,
+    color: '#85d534'
+});
+const terrain = new THREE.Mesh(geometry, material);
+terrain.receiveShadow = true;
+terrain.castShadow = true;
+scene.add(terrain);
+
+
 
 const clock = new THREE.Clock();
 
