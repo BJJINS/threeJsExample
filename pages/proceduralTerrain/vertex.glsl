@@ -5,6 +5,7 @@ uniform float uWarpStrength;
 uniform float uTime;
 
 varying vec3 vPosition;
+varying float vUpDot;
 
 #include "./simplexNoise2d.glsl";
 
@@ -36,4 +37,7 @@ void main() {
     csm_Normal = cross(toA, toB);
 
     vPosition = csm_Position;
+    vPosition.xz += uTime * .2;
+
+    vUpDot = dot(csm_Normal, vec3(0., 1., 0.));
 }

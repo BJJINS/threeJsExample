@@ -20,7 +20,7 @@ export const scene = new THREE.Scene();
 
 export const renderer = new THREE.WebGLRenderer({
     canvas,
-    antialias: size.pixelRatio < 2
+    antialias: size.pixelRatio < 2,
 });
 renderer.setPixelRatio(size.pixelRatio);
 renderer.setSize(size.width, size.height);
