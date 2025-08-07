@@ -4,8 +4,8 @@ import { OrbitControls, RGBELoader } from 'three/examples/jsm/Addons.js';
 import { Brush, Evaluator, SUBTRACTION } from "three-bvh-csg";
 import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 import spruikSunrisePath from "./static/spruit_sunrise.hdr?url";
-import vertexShader from "./vertex.glsl"
-import fragmentShader from "./fragment.glsl"
+import vertexShader from "./vertex.glsl";
+import fragmentShader from "./fragment.glsl";
 camera.position.set(-10, 6, -2);
 camera.lookAt(0, 0, 0);
 camera.fov = 35;
@@ -53,18 +53,66 @@ board.receiveShadow = true;
 board.castShadow = true;
 scene.add(board);
 
+const debugObject = {};
+debugObject.colorWaterDeep = '#002b3d';
+debugObject.colorWaterSurface = '#66a8ff';
+debugObject.colorSand = '#ffe894';
+debugObject.colorGrass = '#85d534';
+debugObject.colorSnow = '#ffffff';
+debugObject.colorRock = '#bfbd8d';
+
+const uniforms = {
+    uPositionFrequency: new THREE.Uniform(0.2),
+    uStrength: new THREE.Uniform(2.0),
+    uWarpFrequency: new THREE.Uniform(5),
+    uWarpStrength: new THREE.Uniform(0.5),
+    uTime: new THREE.Uniform(0),
+
+    uColorWaterDeep: new THREE.Uniform(new THREE.Color(debugObject.colorWaterDeep)),
+    uColorWaterSurface: new THREE.Uniform(new THREE.Color(debugObject.colorWaterSurface)),
+    uColorSand: new THREE.Uniform(new THREE.Color(debugObject.colorSand)),
+    uColorGrass: new THREE.Uniform(new THREE.Color(debugObject.colorGrass)),
+    uColorSnow: new THREE.Uniform(new THREE.Color(debugObject.colorSnow)),
+    uColorRock: new THREE.Uniform(new THREE.Color(debugObject.colorRock)),
+};
+
+gui.add(uniforms.uPositionFrequency, 'value', 0, 1, 0.001).name('uPositionFrequency');
+gui.add(uniforms.uStrength, 'value', 0, 10, 0.001).name('uStrength');
+gui.add(uniforms.uWarpFrequency, 'value', 0, 10, 0.001).name('uWarpFrequency');
+gui.add(uniforms.uWarpStrength, 'value', 0, 1, 0.001).name('uWarpStrength');
+
+gui.addColor(debugObject, 'colorWaterDeep').onChange(() => uniforms.uColorWaterDeep.value.set(debugObject.colorWaterDeep))
+gui.addColor(debugObject, 'colorWaterSurface').onChange(() => uniforms.uColorWaterSurface.value.set(debugObject.colorWaterSurface))
+gui.addColor(debugObject, 'colorSand').onChange(() => uniforms.uColorSand.value.set(debugObject.colorSand))
+gui.addColor(debugObject, 'colorGrass').onChange(() => uniforms.uColorGrass.value.set(debugObject.colorGrass))
+gui.addColor(debugObject, 'colorSnow').onChange(() => uniforms.uColorSnow.value.set(debugObject.colorSnow))
+gui.addColor(debugObject, 'colorRock').onChange(() => uniforms.uColorRock.value.set(debugObject.colorRock))
+
 const geometry = new THREE.PlaneGeometry(10, 10, 500, 500);
+geometry.deleteAttribute("normal");
+geometry.deleteAttribute("uv");
 geometry.rotateX(- Math.PI * 0.5);
+
+
+const deptMaterial = new CustomShaderMaterial({
+    baseMaterial: THREE.MeshDepthMaterial,
+    vertexShader,
+    uniforms,
+    depthPacking: THREE.RGBADepthPacking
+});
+
 const material = new CustomShaderMaterial({
     baseMaterial: THREE.MeshStandardMaterial,
     vertexShader,
     fragmentShader,
+    uniforms,
 
     metalness: 0,
     roughness: 0.5,
     color: '#85d534'
 });
 const terrain = new THREE.Mesh(geometry, material);
+terrain.customDepthMaterial = deptMaterial;
 terrain.receiveShadow = true;
 terrain.castShadow = true;
 scene.add(terrain);
@@ -75,7 +123,7 @@ const clock = new THREE.Clock();
 
 const tick = () => {
     const elapsedTime = clock.getElapsedTime();
-
+    uniforms.uTime.value = elapsedTime;
 
     renderer.render(scene, camera);
     window.requestAnimationFrame(tick);
