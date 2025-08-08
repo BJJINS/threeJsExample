@@ -8,7 +8,7 @@ uniform vec3 uColorRock;
 varying vec3 vPosition;
 varying float vUpDot;
 
-#include "./simplexNoise2d.glsl";
+#include "../shaders/simplexNoise2d.glsl";
 
 void main() {
     vec3 color = vec3(1.);

@@ -7,7 +7,7 @@ uniform float uTime;
 varying vec3 vPosition;
 varying float vUpDot;
 
-#include "./simplexNoise2d.glsl";
+#include "../shaders/simplexNoise2d.glsl";
 
 float getElevation(vec2 position) {
     vec2 warpPosition = position;
