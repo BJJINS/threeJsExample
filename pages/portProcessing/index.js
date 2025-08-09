@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { scene, camera, renderer, gui, gltf, textureLoader } from "../template";
+import { scene, camera, renderer, gui, gltf, textureLoader, size } from "../template";
 import damagedHelmetPath from "./static/models/DamagedHelmet/glTF/DamagedHelmet.gltf?url";
-import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { DotScreenPass, EffectComposer, GlitchPass, OrbitControls, RenderPass } from "three/examples/jsm/Addons.js";
 
 gltf.useDraco();
 const cubeTextureLoader = new THREE.CubeTextureLoader();
@@ -45,12 +45,29 @@ renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.toneMapping = THREE.ReinhardToneMapping;
 renderer.toneMappingExposure = 1.5;
 
+// 效果合成器 后期处理
+const effectComposer = new EffectComposer(renderer);
+effectComposer.setSize(size.width, size.height);
+effectComposer.setPixelRatio(size.pixelRatio);
+// 用来渲染原本的效果 等同于 renderer.render(scene, camera)
+const renderPass = new RenderPass(scene, camera); 
+effectComposer.addPass(renderPass);
+
+const dotScreenPass = new DotScreenPass();
+dotScreenPass.enabled = false;
+effectComposer.addPass(dotScreenPass);
+
+const glitchPass = new GlitchPass();
+glitchPass.enabled = false;
+effectComposer.addPass(glitchPass)
+
 const clock = new THREE.Clock();
 
 const tick = () => {
     const elapsedTime = clock.getElapsedTime();
 
-    renderer.render(scene, camera);
+    // renderer.render(scene, camera);
+    effectComposer.render();
     window.requestAnimationFrame(tick);
 };
 
