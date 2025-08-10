@@ -2,8 +2,8 @@ import * as THREE from "three";
 import { scene, camera, renderer, gui, gltf, textureLoader, size } from "../template";
 import damagedHelmetPath from "./static/models/DamagedHelmet/glTF/DamagedHelmet.gltf?url";
 import { DotScreenPass, EffectComposer, GammaCorrectionShader, GlitchPass, OrbitControls, RenderPass, RGBShiftShader, ShaderPass, SMAAPass, UnrealBloomPass } from "three/examples/jsm/Addons.js";
-import vertexShader from "./vertex.glsl"
-import fragmentShader from "./fragment.glsl"
+import vertexShader from "./vertex.glsl";
+import fragmentShader from "./fragment.glsl";
 
 gltf.useDraco();
 const cubeTextureLoader = new THREE.CubeTextureLoader();
@@ -74,33 +74,39 @@ effectComposer.addPass(glitchPass);
 
 const rgbShiftPass = new ShaderPass(RGBShiftShader);
 effectComposer.addPass(rgbShiftPass);
+
+// convert the liner color space encoding to gamma color space encoding
+// renderer.outputColorSpace = THREE.SRGBColorSpace;
 const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
 effectComposer.addPass(gammaCorrectionPass);
 
-const unrealBloomPass= new UnrealBloomPass();
-unrealBloomPass.strength = 0.3
-unrealBloomPass.radius = 1
-unrealBloomPass.threshold = 0.6
+const unrealBloomPass = new UnrealBloomPass();
+unrealBloomPass.strength = 0.3;
+unrealBloomPass.radius = 1;
+unrealBloomPass.threshold = 0.6;
 unrealBloomPass.enabled = false;
-gui.add(unrealBloomPass, 'enabled')
-gui.add(unrealBloomPass, 'strength').min(0).max(2).step(0.001)
-gui.add(unrealBloomPass, 'radius').min(0).max(2).step(0.001)
-gui.add(unrealBloomPass, 'threshold').min(0).max(1).step(0.001)
+gui.add(unrealBloomPass, 'enabled');
+gui.add(unrealBloomPass, 'strength').min(0).max(2).step(0.001);
+gui.add(unrealBloomPass, 'radius').min(0).max(2).step(0.001);
+gui.add(unrealBloomPass, 'threshold').min(0).max(1).step(0.001);
 effectComposer.addPass(unrealBloomPass);
 
 const tintPass = new ShaderPass({
-    uniforms:{
+    uniforms: {
         // 上一阶段获取纹理
-        tDiffuse: { value: null }
+        tDiffuse: { value: null },
+        uNormalMap: { value: null },
     },
     vertexShader,
     fragmentShader
-})
+});
+tintPass.uniforms.uNormalMap.value = textureLoader.load(import.meta.resolve("./static/textures/interfaceNormalMap.png"));
+effectComposer.addPass(tintPass);
 
-effectComposer.addPass(tintPass)
-
-
+ 
 // 如果不支持webgl2.0，开启抗锯齿通道
+// webgl2.0 兼容性 https://caniuse.com/webgl2
+// 现在基本可以不用写下面的代码了
 if (size.pixelRatio === 1 && !renderer.capabilities.isWebGL2) {
     const smaaPass = new SMAAPass();
     effectComposer.addPass(smaaPass);
@@ -112,10 +118,7 @@ window.addEventListener("resize", () => {
     effectComposer.setPixelRatio(size.pixelRatio);
 });
 
-const clock = new THREE.Clock();
-
 const tick = () => {
-    const elapsedTime = clock.getElapsedTime();
 
     // renderer.render(scene, camera);
     effectComposer.render();

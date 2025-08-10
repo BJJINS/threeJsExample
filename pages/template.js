@@ -18,6 +18,7 @@ export const camera = new THREE.PerspectiveCamera(75, size.width / size.height, 
 
 export const scene = new THREE.Scene();
 
+
 export const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: size.pixelRatio < 2,
