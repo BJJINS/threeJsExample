@@ -2,6 +2,11 @@ import * as THREE from "three";
 import "./style.css";
 import GUI from "three/examples/jsm/libs/lil-gui.module.min.js";
 import { GLTFLoader, DRACOLoader } from "three/examples/jsm/Addons.js";
+import Stats from "three/examples/jsm/libs/stats.module.js";
+
+export const stats = new Stats();
+document.body.appendChild(stats.dom);
+
 export const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
 
