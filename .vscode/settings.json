@@ -13,6 +13,7 @@
         "Raycaster",
         "Reinhard",
         "RGBE",
+        "SMAA",
         "smoothstep",
         "tonemapping"
     ]
