@@ -46,8 +46,8 @@ window.addEventListener("resize", () => {
 });
 
 export const textureLoader = new THREE.TextureLoader();
-
-const gltfLoader = new GLTFLoader();
+export const loadingManager = new THREE.LoadingManager();
+export const gltfLoader = new GLTFLoader(loadingManager);
 export const gltf = {
     loader: gltfLoader,
     useDraco: () => {
@@ -56,4 +56,4 @@ export const gltf = {
         gltfLoader.setDRACOLoader(draco);
     }
 };
-export const cubeTextureLoader = new THREE.CubeTextureLoader();
+export const cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager);

@@ -1,14 +1,14 @@
 import * as THREE from 'three';
-import { scene, camera, renderer, gltf, stats } from "../template";
+import { scene, camera, renderer, gltf, stats, cubeTextureLoader, loadingManager } from "../template";
 import flightHelmetPath from "./static/models/FlightHelmet/glTF/FlightHelmet.gltf?url";
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
+import gsap from 'gsap';
 
 camera.position.set(4, 1, - 4);
 camera.lookAt(0, 0, 0);
 new OrbitControls(camera, renderer.domElement);
 
 
-const cubeTextureLoader = new THREE.CubeTextureLoader();
 const debugObject = {};
 debugObject.envMapIntensity = 2.5;
 
@@ -55,6 +55,40 @@ renderer.toneMapping = THREE.ReinhardToneMapping;
 renderer.toneMappingExposure = 3;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+scene.add(new THREE.AxesHelper(10));
+
+// 遮罩
+const overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1);
+const overlayMaterial = new THREE.ShaderMaterial({
+    transparent: true,
+    uniforms: {
+        uAlpha: new THREE.Uniform(1.0)
+    },
+    vertexShader: `
+       void main(){
+            gl_Position = vec4(position,1.0);
+       }
+    `,
+    fragmentShader: `
+        uniform float uAlpha;
+        void main(){
+            gl_FragColor = vec4(0.0,0.0,0.0,uAlpha);
+        }
+    `
+});
+const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial);
+scene.add(overlay);
+
+loadingManager.onProgress = () => {
+    console.log('111 :>> ', 111);
+};
+
+loadingManager.onLoad = () => {
+    gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0 })
+};
+
+
 
 const tick = () => {
     stats.begin();
