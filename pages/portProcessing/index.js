@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { scene, camera, renderer, gui, gltf, textureLoader, size } from "../template";
-import damagedHelmetPath from "./static/models/DamagedHelmet/glTF/DamagedHelmet.gltf?url";
+import damagedHelmetPath from "/models/DamagedHelmet/glTF/DamagedHelmet.gltf?url";
 import { DotScreenPass, EffectComposer, GammaCorrectionShader, GlitchPass, OrbitControls, RenderPass, RGBShiftShader, ShaderPass, SMAAPass, UnrealBloomPass } from "three/examples/jsm/Addons.js";
 import vertexShader from "./vertex.glsl";
 import fragmentShader from "./fragment.glsl";
@@ -8,7 +8,7 @@ import fragmentShader from "./fragment.glsl";
 gltf.useDraco();
 const cubeTextureLoader = new THREE.CubeTextureLoader();
 const environmentMap = cubeTextureLoader
-    .setPath(import.meta.resolve("./static/textures/environmentMaps/0/"))
+    .setPath(import.meta.resolve("/environmentMaps/0/"))
     .load(["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"]);
 
 scene.background = environmentMap;
