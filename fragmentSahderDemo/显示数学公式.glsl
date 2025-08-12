@@ -67,7 +67,7 @@ float plotRect(vec2 st, vec2 leftBottom, vec2 rightTop) {
 void main() {
     vec2 uv = gl_FragCoord.xy / u_resolution.xy;
     float aspect = u_resolution.x / u_resolution.y;
-    vec2 st = uv * 4.0 * 3.14159 - 2.0 * 3.14159;  // 范围变为[-2π, 2π]
+    vec2 st = uv ;  // 范围变为[-2π, 2π]
     st.x *= aspect; // 让 x 方向的单位长度与 y 方向保持一致 防止宽高比倒置图像变形
 
     vec3 color = vec3(1.0);
