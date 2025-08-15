@@ -11,7 +11,6 @@ camera.fov = 45;
 camera.position.set(4, 2, 4);
 camera.lookAt(0, 0, 0);
 new OrbitControls(camera, renderer.domElement);
-scene.add(new THREE.AxesHelper(4));
 
 const debugObject = {
     clearColor: '#201919'
