@@ -1,6 +1,7 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
+import wasm from "vite-plugin-wasm";
 import glsl from 'vite-plugin-glsl';
 import fs from 'node:fs';
 
@@ -29,7 +30,7 @@ function scanPages() {
 
 
 export default defineConfig({
-    plugins: [glsl()],
+    plugins: [glsl(), wasm(),],
     build: {
         rollupOptions: {
             input: scanPages()

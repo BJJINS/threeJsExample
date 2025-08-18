@@ -19,7 +19,7 @@ export const size = {
 
 size.resolution = new THREE.Vector2(size.width * size.pixelRatio, size.height * size.pixelRatio);
 
-export const camera = new THREE.PerspectiveCamera(75, size.width / size.height, 0.1, 1000);
+export const camera = new THREE.PerspectiveCamera(75, size.width / size.height, 0.1, 100);
 
 export const scene = new THREE.Scene();
 

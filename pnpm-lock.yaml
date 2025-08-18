@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@dimforge/rapier3d':
+        specifier: ^0.18.2
+        version: 0.18.2
       gsap:
         specifier: ^3.13.0
         version: 3.13.0
@@ -27,8 +30,14 @@ importers:
       vite:
         specifier: ^7.0.3
         version: 7.0.3
+      vite-plugin-wasm:
+        specifier: ^3.5.0
+        version: 3.5.0(vite@7.0.3)
 
 packages:
+
+  '@dimforge/rapier3d@0.18.2':
+    resolution: {integrity: sha512-VM6f6L/1BVhvglTM67GlHmlI6Bw9NWcXzlLGoiZ7H1dOb86c6HJ9vIa6WDHThAfgN5B0c2oLeTAQ592BDPDzgA==}
 
   '@esbuild/aix-ppc64@0.25.6':
     resolution: {integrity: sha512-ShbM/3XxwuxjFiuVBHA+d3j5dyac0aEVVq1oluIDf71hUw0aRF59dV/efUsIwFnR6m8JNM2FjZOzmaZ8yG61kw==}
@@ -394,6 +403,11 @@ packages:
     peerDependencies:
       vite: '>= 3.x'
 
+  vite-plugin-wasm@3.5.0:
+    resolution: {integrity: sha512-X5VWgCnqiQEGb+omhlBVsvTfxikKtoOgAzQ95+BZ8gQ+VfMHIjSHr0wyvXFQCa0eKQ0fKyaL0kWcEnYqBac4lQ==}
+    peerDependencies:
+      vite: ^2 || ^3 || ^4 || ^5 || ^6 || ^7
+
   vite@7.0.3:
     resolution: {integrity: sha512-y2L5oJZF7bj4c0jgGYgBNSdIu+5HF+m68rn2cQXFbGoShdhV1phX9rbnxy9YXj82aS8MMsCLAAFkRxZeWdldrQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -435,6 +449,8 @@ packages:
         optional: true
 
 snapshots:
+
+  '@dimforge/rapier3d@0.18.2': {}
 
   '@esbuild/aix-ppc64@0.25.6':
     optional: true
@@ -690,6 +706,10 @@ snapshots:
       vite: 7.0.3
     transitivePeerDependencies:
       - rollup
+
+  vite-plugin-wasm@3.5.0(vite@7.0.3):
+    dependencies:
+      vite: 7.0.3
 
   vite@7.0.3:
     dependencies:

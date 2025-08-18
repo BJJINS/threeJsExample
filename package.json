@@ -13,9 +13,11 @@
   "license": "ISC",
   "packageManager": "pnpm@10.10.0",
   "devDependencies": {
-    "vite": "^7.0.3"
+    "vite": "^7.0.3",
+    "vite-plugin-wasm": "^3.5.0"
   },
   "dependencies": {
+    "@dimforge/rapier3d": "^0.18.2",
     "gsap": "^3.13.0",
     "three": "^0.178.0",
     "three-bvh-csg": "^0.0.17",
