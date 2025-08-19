@@ -57,3 +57,21 @@ export const gltf = {
     }
 };
 export const cubeTextureLoader = new THREE.CubeTextureLoader(loadingManager);
+
+export const rapierDebugRender = (scene) => {
+    // 创建用于调试渲染的几何体和材质
+    const debugGeometry = new THREE.BufferGeometry();
+    const debugMaterial = new THREE.LineBasicMaterial({
+        vertexColors: THREE.VertexColors
+    });
+    const debugMesh = new THREE.LineSegments(debugGeometry, debugMaterial);
+    scene.add(debugMesh);
+
+    return (world) => {
+        const { vertices, colors } = world.debugRender();
+        debugGeometry.setAttribute('position',
+            new THREE.BufferAttribute(vertices, 3));
+        debugGeometry.setAttribute('color',
+            new THREE.BufferAttribute(colors, 4));
+    };
+};
