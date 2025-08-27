@@ -114,15 +114,16 @@ vec3 getSceneColor(vec2 fragCoord) {
 void main() {
     vec3 color = vec3(0.);
 
-    float count = 0.;
-    for (float aaY = 0.; aaY < 1.; aaY++) {
-        for (float aaX = 0.; aaX < 1.; aaX++)
-        {
-            color += getSceneColor(gl_FragCoord.xy + vec2(aaX, aaY) / 1.);
-            count += 1.;
+    const int samples = 1; // 2x2网格采样
+    float totalSamples = float(samples * samples);
+    for (int y = 0; y < samples; y++) {
+        for (int x = 0; x < samples; x++) {
+            // 计算采样偏移量，范围[-0.5, 0.5)
+            vec2 offset = (vec2(x, y) / float(samples)) - 0.5;
+            color += getSceneColor(gl_FragCoord.xy + offset);
         }
     }
-    color /= count;
+    color /= totalSamples;
 
     gl_FragColor = vec4(color, 1.0);
 }
